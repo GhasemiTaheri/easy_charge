@@ -6,4 +6,4 @@ set -o nounset
 
 
 python manage.py migrate
-exec gunicorn -b 0.0.0.0 config.wsgi:application --reload
+exec uvicorn config.asgi:application --host 0.0.0.0 --reload --reload-include '*.html'

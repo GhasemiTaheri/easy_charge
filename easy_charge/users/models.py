@@ -4,6 +4,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from easy_charge.utility.db import TimeBaseModel
+
 
 class User(AbstractUser):
     """
@@ -15,15 +17,16 @@ class User(AbstractUser):
     last_name = None  # type: ignore[assignment]
 
 
-class VendorProfile(models.Model):  # noqa: DJ008
+class VendorProfile(TimeBaseModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name=_("User"),
     )
+    is_verify = models.BooleanField(_("Is Verified"), default=True)
 
 
-class CustomerProfile(models.Model):  # noqa: DJ008
+class CustomerProfile(TimeBaseModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

@@ -15,6 +15,11 @@
             "source": "~/.ssh",
             "target": "/home/dev-user/.ssh",
             "type": "bind"
+        },
+        {
+            "source": "./.envs/.installed_packages/",
+            "target": "/usr/local/lib/python3.12/site-packages",
+            "type": "bind"
         }
     ],
     // Tells devcontainer.json supporting services / tools whether they should run
@@ -43,8 +48,6 @@
                     "linting.mypyPath": "/usr/local/bin/mypy",
                 }
             },
-            // https://code.visualstudio.com/docs/remote/devcontainerjson-reference#_vs-code-specific-properties
-            // Add the IDs of extensions you want installed when the container is created.
             "extensions": [
                 "davidanson.vscode-markdownlint",
                 "mrmlnc.vscode-duplicate",
@@ -59,10 +62,5 @@
             ]
         }
     },
-    // Uncomment the next line if you want start specific services in your Docker Compose config.
-    // "runServices": [],
-    // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
-    // "shutdownAction": "none",
-    // Uncomment the next line to run commands after the container is created.
     "postCreateCommand": "cat .devcontainer/bashrc.override.sh >> ~/.bashrc"
 }
