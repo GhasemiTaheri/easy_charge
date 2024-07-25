@@ -37,7 +37,7 @@ class CustomerProfile(TimeBaseModel):
         unique=True,
         validators=[
             RegexValidator(
-                regex=r"^(?:98|\+98|0)?9[0-9]{9}$",
+                regex=r"^09[0-9]{9}$",
                 message=_("Phone number is not correct!"),
                 code="invalid_phone_number",
             ),
