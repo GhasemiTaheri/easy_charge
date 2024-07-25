@@ -1,9 +1,12 @@
 # ruff: noqa
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import include
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView  # type: ignore
+from rest_framework_simplejwt.views import TokenRefreshView  # type: ignore
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
@@ -14,8 +17,9 @@ urlpatterns = [
 urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
-    # DRF auth token
-    path("api/auth-token/", obtain_auth_token),
+    # simple jwt token
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/docs/",
