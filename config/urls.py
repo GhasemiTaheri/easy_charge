@@ -7,6 +7,7 @@ from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView  # type: ignore
 from rest_framework_simplejwt.views import TokenRefreshView  # type: ignore
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
@@ -27,8 +28,8 @@ urlpatterns += [
         name="api-docs",
     ),
 ]
-
 if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
 

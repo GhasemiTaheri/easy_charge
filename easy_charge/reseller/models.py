@@ -58,7 +58,7 @@ class CreditRequest(TimeBaseModel):
         default_manager_name = "objects"
 
     def __str__(self) -> str:
-        return f"{self.vendor} {self.ammount}"
+        return f"{self.vendor} {self.amount}"
 
 
 class SellHistory(TimeBaseModel):

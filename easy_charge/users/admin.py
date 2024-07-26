@@ -4,7 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 from .forms import UserAdminChangeForm
 from .forms import UserAdminCreationForm
+from .models import CustomerProfile
 from .models import User
+from .models import VendorProfile
 
 
 @admin.register(User)
@@ -30,3 +32,14 @@ class UserAdmin(auth_admin.UserAdmin):
     )
     list_display = ["username", "name", "is_superuser"]
     search_fields = ["name"]
+
+
+@admin.register(CustomerProfile)
+class CustomerProfileAdmin(admin.ModelAdmin):
+    list_display = ["user", "phone_number", "balance"]
+    search_fields = ["phone_number"]
+
+
+@admin.register(VendorProfile)
+class VendorProfileAdmin(admin.ModelAdmin):
+    list_display = ["user", "is_verify"]

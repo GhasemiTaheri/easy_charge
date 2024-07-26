@@ -61,10 +61,12 @@ class ChargePhoneNumberView(APIView):
     permission_classes = [IsCustomerUser]
 
     def post(self, request, vendor_id):
-        serializer = ChargePhoneSerializer(request.data).is_valid(raise_exception=True)
+        serializer = ChargePhoneSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         vendor: Vendor = get_object_or_404(
             Vendor.objects.filter(is_verify=True).select_for_update(),
-            {"id": str(vendor_id)},
+            id=str(vendor_id),
         )
         current_customer: CustomerProfile = request.user.customerprofile
 
