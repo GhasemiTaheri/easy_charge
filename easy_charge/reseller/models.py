@@ -40,7 +40,6 @@ class CreditRequest(TimeBaseModel):
     vendor = models.ForeignKey(
         Vendor,
         on_delete=models.CASCADE,
-        limit_choices_to={"is_verify": True},
         verbose_name=_("Vendor"),
     )
     amount = models.PositiveIntegerField(

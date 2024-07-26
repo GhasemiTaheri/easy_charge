@@ -29,5 +29,7 @@ class VendorSerializer(serializers.ModelSerializer):
 class CreditRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditRequest
-        fields = ["vendor", "amount"]
-        extra_kwargs = {"vendor": {"required": False}}
+        fields = ["id", "amount", "approved"]
+        extra_kwargs = {
+            "approved": {"read_only": True},
+        }
