@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -26,6 +27,12 @@ class VendorSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class PublicVendorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vendor
+        fields = ["id", "name"]
+
+
 class CreditRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditRequest
@@ -33,3 +40,17 @@ class CreditRequestSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "approved": {"read_only": True},
         }
+
+
+class ChargePhoneSerializer(serializers.Serializer):
+    amount = serializers.IntegerField(min_value=1, required=True)
+    phone_number = serializers.CharField(
+        validators=[
+            RegexValidator(
+                regex=r"^09[0-9]{9}$",
+                message=_("Phone number is not correct!"),
+                code="invalid_phone_number",
+            ),
+        ],
+        required=False,
+    )

@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueValidator
 
 from easy_charge.users.models import CustomerProfile
 from easy_charge.users.models import User
+from easy_charge.users.models import VendorProfile
 
 
 class SignUpSerializer(serializers.Serializer):
@@ -54,3 +55,31 @@ class CustomerSerializer(SignUpSerializer):
         user_data = {**validated_data}
         del user_data["phone_number"]
         return super().create(user_data)
+
+
+class VendorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VendorProfile
+        fields = ["is_verify"]
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerProfile
+        fields = ["phone_number", "balance"]
+
+
+class MeSerializer(serializers.ModelSerializer):
+    extra = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "name", "extra"]
+
+    def get_extra(self, obj):
+        if obj.get_role() == "vendor":
+            return VendorProfileSerializer(instance=obj.vendorprofile).data
+        if obj.get_role() == "customer":
+            return CustomerProfileSerializer(obj.customerprofile).data
+
+        return None

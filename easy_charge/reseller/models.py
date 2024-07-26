@@ -73,6 +73,11 @@ class SellHistory(TimeBaseModel):
         null=True,
         verbose_name=_("Charge Buyer"),
     )
+    phone_number = models.CharField(  # noqa: DJ001
+        _("Phone number"),
+        max_length=12,
+        null=True,
+    )
     amount = models.PositiveIntegerField(
         _("Charge Amount"),
     )

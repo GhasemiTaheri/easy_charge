@@ -3,12 +3,14 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from easy_charge.users.models import CustomerProfile
 from easy_charge.users.models import VendorProfile
 
 from .serializers import CustomerSerializer
+from .serializers import MeSerializer
 from .serializers import SignUpSerializer
 
 
@@ -55,3 +57,9 @@ class SignUpViewSet(GenericViewSet):
             serializer.data,
             status=status.HTTP_201_CREATED,
         )
+
+
+class MeApiView(APIView):
+    def get(self, request):
+        serializer = MeSerializer(instance=request.user)
+        return Response(serializer.data)
