@@ -9,9 +9,22 @@ from rest_framework.viewsets import ModelViewSet
 from easy_charge.reseller.models import CreditRequest
 from easy_charge.reseller.models import Vendor
 from easy_charge.users.models import User  # noqa: TCH001
+from easy_charge.utility.api import IsVendorUser
 
 from .permissions import CreditRequestPermission
 from .serializers import CreditRequestSerializer
+from .serializers import VendorSerializer
+
+
+class VendorViewSet(ModelViewSet):
+    serializer_class = VendorSerializer
+    permission_classes = [IsVendorUser]
+
+    def get_queryset(self) -> QuerySet:
+        return Vendor.objects.filter(owner=self.request.user.vendorprofile.id)
+
+    def perform_create(self, serializer) -> None:
+        serializer.save(owner=self.request.user.vendorprofile)
 
 
 class CreditRequestViewSet(ModelViewSet):

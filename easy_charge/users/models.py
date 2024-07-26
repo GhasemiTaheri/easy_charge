@@ -33,7 +33,7 @@ class VendorProfile(TimeBaseModel):
     )
     is_verify = models.BooleanField(_("Is Verified"), default=True)
 
-    def has_stor(self):
+    def has_store(self):
         return hasattr(self, "vendor")
 
 
