@@ -11,7 +11,7 @@ router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("vendor", VendorViewSet, basename="vendor")
 router.register("credit-request", CreditRequestViewSet, basename="credit_request")
-app_name = "reseller"
+
 urlpatterns = [
     *router.urls,
     path(
