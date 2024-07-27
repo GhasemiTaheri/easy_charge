@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
@@ -89,6 +90,10 @@ class ChargePhoneNumberView(APIView):
                 current_customer.balance += serializer.validated_data.get("amount")
                 current_customer.save()
                 sellhistory_data["customer"] = current_customer
+                try:  # noqa: SIM105
+                    cache.delete(f"me_api_view_cache_{request.user.id}")
+                except:  # noqa: E722, S110
+                    pass
 
             SellHistory.objects.create(**sellhistory_data)
 

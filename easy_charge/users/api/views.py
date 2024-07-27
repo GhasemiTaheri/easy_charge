@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -59,7 +61,14 @@ class SignUpViewSet(GenericViewSet):
         )
 
 
+def user_cache_key(request):
+    return f"me_api_view_cache_{request.user.id}"
+
+
 class MeApiView(APIView):
+    @method_decorator(
+        cache_page(60 * 5, key_prefix=user_cache_key),
+    )  # cache result for 5 mins
     def get(self, request):
         serializer = MeSerializer(instance=request.user)
         return Response(serializer.data)
