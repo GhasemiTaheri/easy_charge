@@ -9,6 +9,7 @@ from .views import SignUpViewSet
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("sign-up", SignUpViewSet, basename="sign_up")
+app_name = "users"
 urlpatterns = [
     *router.urls,
     path("me/", MeApiView.as_view(), name="me"),
