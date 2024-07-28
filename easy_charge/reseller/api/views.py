@@ -82,6 +82,7 @@ class ChargePhoneNumberView(APIView):
                 "vendor": vendor,
                 "amount": serializer.validated_data.get("amount"),
             }
+
             if serializer.validated_data.get("phone_number"):
                 sellhistory_data["phone_number"] = serializer.validated_data.get(
                     "phone_number"  # noqa: COM812

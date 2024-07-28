@@ -66,9 +66,9 @@ def user_cache_key(request):
 
 
 class MeApiView(APIView):
-    @method_decorator(
-        cache_page(60 * 5, key_prefix=user_cache_key),
-    )  # cache result for 5 mins
+    # @method_decorator(
+    #     cache_page(60 * 5, key_prefix=user_cache_key),
+    # )  # cache result for 5 mins
     def get(self, request):
         serializer = MeSerializer(instance=request.user)
         return Response(serializer.data)
