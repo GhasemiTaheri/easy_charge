@@ -16,6 +16,14 @@ class User(AbstractUser):
     first_name = None  # type: ignore[assignment]
     last_name = None  # type: ignore[assignment]
 
+    def get_role(self):
+        if hasattr(self, "vendorprofile") and self.vendorprofile:
+            return "vendor"
+        elif hasattr(self, "customerprofile") and self.customerprofile:
+            return "customer"
+        else:
+            return "admin"
+
 
 class VendorProfile(TimeBaseModel):
     user = models.OneToOneField(
@@ -24,6 +32,9 @@ class VendorProfile(TimeBaseModel):
         verbose_name=_("User"),
     )
     is_verify = models.BooleanField(_("Is Verified"), default=True)
+
+    def has_store(self):
+        return hasattr(self, "vendor")
 
 
 class CustomerProfile(TimeBaseModel):

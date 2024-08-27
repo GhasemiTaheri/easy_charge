@@ -1,35 +1,58 @@
 import pytest
-from rest_framework.test import APIRequestFactory
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
 
-from easy_charge.users.api.views import UserViewSet
+from easy_charge.users.models import CustomerProfile
 from easy_charge.users.models import User
+from easy_charge.users.tests.factories import UserFactory
 
 
-class TestUserViewSet:
-    @pytest.fixture()
-    def api_rf(self) -> APIRequestFactory:
-        return APIRequestFactory()
+@pytest.fixture()
+def api_client():
+    return APIClient()
 
-    def test_get_queryset(self, user: User, api_rf: APIRequestFactory):
-        view = UserViewSet()
-        request = api_rf.get("/fake-url/")
-        request.user = user
 
-        view.request = request
+@pytest.mark.django_db()
+def test_vendor_signup(api_client):
+    url = reverse("api:sign_up-vendor-signup")
+    data = {
+        "username": "testvendor",
+        "name": "Test Vendor",
+        "password": "strongpassword123",
+    }
+    response = api_client.post(url, data, format="json")
 
-        assert user in view.get_queryset()
+    assert response.status_code == status.HTTP_201_CREATED
+    assert User.objects.filter(username="testvendor").exists()
 
-    def test_me(self, user: User, api_rf: APIRequestFactory):
-        view = UserViewSet()
-        request = api_rf.get("/fake-url/")
-        request.user = user
 
-        view.request = request
+@pytest.mark.django_db()
+def test_customer_signup(api_client):
+    url = reverse("api:sign_up-customer-signup")
+    data = {
+        "username": "testcustomer",
+        "name": "Test Customer",
+        "password": "strongpassword123",
+        "phone_number": "09123456789",
+    }
+    response = api_client.post(url, data, format="json")
 
-        response = view.me(request)  # type: ignore[call-arg, arg-type, misc]
+    assert response.status_code == status.HTTP_201_CREATED
+    assert User.objects.filter(username="testcustomer").exists()
+    customer = User.objects.get(username="testcustomer").customerprofile
+    assert customer.phone_number == "09123456789"
 
-        assert response.data == {
-            "username": user.username,
-            "url": f"http://testserver/api/users/{user.username}/",
-            "name": user.name,
-        }
+
+@pytest.mark.django_db()
+def test_me_view_customer(api_client):
+    user = UserFactory(username="customeruser")
+    CustomerProfile.objects.create(user=user, phone_number="09123456789", balance=100)
+    api_client.force_authenticate(user=user)
+
+    response = api_client.get(reverse("api:me"))
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["username"] == "customeruser"
+    assert response.data["extra"]["phone_number"] == "09123456789"
+    assert response.data["extra"]["balance"] == 100
